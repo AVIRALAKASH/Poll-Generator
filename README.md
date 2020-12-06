@@ -1,5 +1,9 @@
 # Poll-Generator
 
+<poll-gen.web.app>
+
+## Resources used
+
  - [nodejs.org](https://nodejs.org/)
  - [reactjs.org](https://reactjs.org/)
  - [styled-components.com](https://styled-components.com/)
