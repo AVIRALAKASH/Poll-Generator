@@ -1,6 +1,6 @@
 # Poll-Generator
 
-<poll-gen.web.app>
+<https://poll-gen.web.app/>
 
 ## Resources used
 
