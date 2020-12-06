@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Poll Generator | Sign In</title>
+		<link rel="stylesheet" href="css/fonts/muli.css"/>
+		<link rel="stylesheet" href="css/login-page.css"/>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script src="js/dependencies/crypto-js.min.js"></script>
+		<script src="js/dependencies/react.production.min.js"></script>
+		<script src="js/dependencies/react-dom.production.min.js"></script>
+		<script src="js/dependencies/react-is.production.min.js"></script>
+		<script src="js/dependencies/styled-components.min.js"></script>
+		<script src="js/generateId.js"></script>
+		<script src="js/url-parser.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-firestore.js"></script>
+		<script>
+			var config = {
+				apiKey: "AIzaSyBJV7TgJDnwnQxnr1d7yqyXXOxvFyxc240",
+				authDomain: "poll-gen.firebaseapp.com",
+				databaseURL: "https://poll-gen.firebaseio.com",
+				projectId: "poll-gen",
+				storageBucket: "poll-gen.appspot.com",
+				messagingSenderId: "87956880271",
+				appId: "1:87956880271:web:c2909847068adad35fa9fa",
+				measurementId: "G-0NZ6J63KP5"
+			};
+			firebase.initializeApp( config );
+			var db = firebase.firestore();
+			var secondary = firebase.initializeApp( config, "secondary" );
+		</script>
+		<script src="js/captureEmailPassword.js"></script>
+		<script src="js/LoginPage.js"></script>
+</html>

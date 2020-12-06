@@ -1,0 +1,157 @@
+@import url( "fonts/icon.css" );
+@import url( "fonts/muli.css" );
+@import url( "fonts/roboto.css" );
+@import url( "fonts/ibm-plex-mono.css" );
+
+body {
+	font-family: "Muli";
+}
+
+#root {
+	position: fixed;
+	top: 0; bottom: 0;
+	left: 0; right: 0;
+}
+
+/* begin: tooltip */
+
+.tooltip {
+	background-color: rgba(60, 64, 67, 0.9);
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	color: #FFFFFF;
+	font: 500 12px "Roboto", arial, sans-serif;
+	letter-spacing: .8px;
+	line-height: 16px;
+	margin-top: 4px;
+	min-height: 14px;
+	padding: 4px 8px;
+	position: fixed; /* something I prefer, gmail had absolute */
+	z-index: 1000;
+	-webkit-font-smoothing: antialiased;
+
+	/* my property */
+	user-select: none;
+
+	/* display: none; */
+	visibility: hidden;
+}
+
+.tooltip.visible {
+	/* display: block; */
+	visibility: visible;
+}
+
+.tooltip.highlight > .box > div:first-child {
+	color: #FFFFFF;
+}
+
+.tooltip > .box {
+	text-align: left;
+}
+
+.tooltip > .box > * {
+	color: #bdc1c6;
+	line-height: 16px;
+}
+
+/* custom */
+
+.tooltip.from-up, .tooltip.from-down, .tooltip.from-left, .tooltip.from-right {
+	--delay: 300ms;
+	opacity: 0;
+	transition: visibility 0s linear var( --delay ), opacity var( --delay ), transform var( --delay );
+}
+.tooltip.from-up.visible, .tooltip.from-down.visible, .tooltip.from-left.visible, .tooltip.from-right.visible {
+	transform: translatey( 0 );
+	opacity: 1;
+	transition: visibility 0s linear 0s, opacity var( --delay ), transform var( --delay );
+}
+
+.tooltip.from-up {
+	transform: translatey( -1rem );
+}
+
+.tooltip.from-down {
+	transform: translatey( 1rem );
+}
+
+.tooltip.from-left {
+	transform: translatex( -1rem );
+}
+
+.tooltip.from-right {
+	transform: translatex( 1rem );
+}
+
+/* even more custom(er) */
+
+.tooltip {
+	cursor: default;
+}
+
+.tooltip > .box > div.highlight {
+	color: #FFFFFF;
+}
+
+.tooltip > .box > div > span.link:hover {
+	cursor: pointer;
+	text-decoration: underline solid;
+}
+
+/* end: tooltip */
+
+/* begin: loading */
+
+@keyframes ldrp {
+	0% {
+		top: 96px;
+		left: 96px;
+		width: 0;
+		height: 0;
+		opacity: 1;
+	}
+	100% {
+		top: 18px;
+		left: 18px;
+		width: 156px;
+		height: 156px;
+		opacity: 0;
+	}
+}
+.ldrp div {
+	position: absolute;
+	border-width: 4px;
+	border-style: solid;
+	opacity: 1;
+	border-radius: 50%;
+	animation: ldrp 1s cubic-bezier( 0, .2, .8, 1 ) infinite;
+}
+.ldrp div:nth-child( 1 ) {
+	border-color: #E90C59
+}
+.ldrp div:nth-child( 2 ) {
+	border-color: #46DFF0;
+	animation-delay: -.5s;
+}
+.loading-spinner-ripple {
+	position: absolute;
+	top: 50%; left: 50%;
+	transform: translate( -50%, -50% );
+	width: 200px;
+	height: 200px;
+	display: inline-block;
+	overflow: hidden;
+	background: transparent;
+}
+.ldrp {
+	width: 100%;
+	height: 100%;
+	position: relative;
+	transform: translateZ( 0 ) scale( 1 );
+	backface-visibility: hidden;
+	transform-origin: 0 0;
+}
+.ldrp div { box-sizing: content-box; }
+
+/* end: loading */
