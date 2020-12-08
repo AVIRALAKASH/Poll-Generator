@@ -539,7 +539,7 @@ const Overlay = function () {
     if (props.pid) {
       var doc = getDocument("polls", props.pid);
       var ended = doc.creationTime + doc.duration >= Date.now();
-      var oc = ended ? i => createVote(props.pid, i) : null;
+      var oc = ended ? i => createVote(props.pid, i) : () => null;
       var choice = getChoice(props.pid);
       var score = [],
           total = 0;
@@ -1079,7 +1079,7 @@ async function createPoll({
     title,
     description,
     options,
-    creationTime: d.getTime(),
+    creationTime: d,
     duration: duration * 24 * 60 * 60 * 1000,
     user: $uid,
     votes: []
@@ -1103,6 +1103,7 @@ async function createVote($pid, vote) {
     let i = findVote($pid),
         vid,
         c = !~i;
+    let deleteId = i;
 
     if (c) {
       i = collections.votes.length;
@@ -1118,13 +1119,16 @@ async function createVote($pid, vote) {
       vote
     };
     collections.votes[i] = doc;
+    let deleteVid = collections.votes[deleteId].vid;
+    c && collections.splice(deleteId, 1);
+    await db.collection("votes").doc(deleteVid).delete();
     await db.collection("votes").doc(vid)[c ? "set" : "update"](doc);
     collections.users[uid].votes.push(vid);
     await db.collection("users").doc($uid).update({
       votes: collections.users[uid].votes
     });
     collections.polls[pid].votes.push(vid);
-    await db.collection("polls").doc($vid).update({
+    await db.collection("polls").doc($pid).update({
       votes: collections.polls[pid].votes
     });
   }
