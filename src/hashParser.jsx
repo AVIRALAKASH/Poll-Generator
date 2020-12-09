@@ -4,7 +4,7 @@ function fromUrl( url ) {
 		let id = url.substring( 5, 8 );
 		url = url.substring( 9 );
 		let result = { isLoading: false, page: "home", pid: null, uid: null };
-		result[ id ] = url;
+		( id === "pid" || id === "uid" ) && ( result[ id ] = url );
 		return result;
 	} else if ( url.startsWith( "profile" ) ) {
 		return { isLoading: false, page: "profile", pid: null, uid: null };

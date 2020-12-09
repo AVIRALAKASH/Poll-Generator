@@ -67,9 +67,9 @@ function findVote(pid) {
 }
 
 function getChoice(pid) {
-  let x = collections.votes[findVote(pid)];
-  if (!x || typeof x.vote !== "number") return -1;
-  return x.vote;
+  let d = findVote(pid);
+  if (d === -1) return -1;
+  return collections.votes[d].vote;
 }
 
 function hasUserVoted(pid) {
@@ -280,6 +280,7 @@ const Card = function () {
 		text-align: right;
 		cursor: default;
 		user-select: none;
+		overflow: hidden;
 	`;
   const Progress = styled("div")`
 		background-color: #ddd;
@@ -1079,7 +1080,7 @@ async function createPoll({
     title,
     description,
     options,
-    creationTime: d,
+    creationTime: d.getTime(),
     duration: duration * 24 * 60 * 60 * 1000,
     user: $uid,
     votes: []
@@ -1101,36 +1102,40 @@ async function createVote($pid, vote) {
 
   if (poll.creationTime + poll.duration >= Date.now()) {
     let i = findVote($pid),
-        vid,
-        c = !~i;
-    let deleteId = i;
+        $vid,
+        isNew = !~i;
+    let id = i;
 
-    if (c) {
+    if (isNew) {
       i = collections.votes.length;
-      vid = generateId();
+      $vid = generateId();
     } else {
-      vid = collections.votes[i].vid;
+      $vid = collections.votes[i].vid;
     }
 
-    const doc = {
-      vid,
-      pid: $pid,
-      uid: $uid,
-      vote
-    };
-    collections.votes[i] = doc;
-    let deleteVid = collections.votes[deleteId].vid;
-    c && collections.splice(deleteId, 1);
-    await db.collection("votes").doc(deleteVid).delete();
-    await db.collection("votes").doc(vid)[c ? "set" : "update"](doc);
-    collections.users[uid].votes.push(vid);
-    await db.collection("users").doc($uid).update({
-      votes: collections.users[uid].votes
-    });
-    collections.polls[pid].votes.push(vid);
-    await db.collection("polls").doc($pid).update({
-      votes: collections.polls[pid].votes
-    });
+    if (isNew) {
+      const doc = {
+        vid: $vid,
+        pid: $pid,
+        uid: $uid,
+        vote
+      };
+      collections.users[uid].votes.push($vid);
+      collections.polls[pid].votes.push($vid);
+      collections.votes[i] = doc;
+      await db.collection("users").doc($uid).update({
+        votes: collections.users[uid].votes
+      });
+      await db.collection("polls").doc($pid).update({
+        votes: collections.polls[pid].votes
+      });
+      await db.collection("votes").doc($vid).set(doc);
+    } else {
+      collections.votes[i].vote = vote;
+      await db.collection("votes").doc($vid).update({
+        vote
+      });
+    }
   }
 
   rerender("#home/pid:" + $pid);

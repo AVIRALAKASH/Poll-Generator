@@ -10,7 +10,7 @@ function fromUrl(url) {
       pid: null,
       uid: null
     };
-    result[id] = url;
+    (id === "pid" || id === "uid") && (result[id] = url);
     return result;
   } else if (url.startsWith("profile")) {
     return {
