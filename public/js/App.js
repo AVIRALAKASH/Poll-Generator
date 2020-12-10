@@ -2,7 +2,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 const root = document.getElementById("root");
 const profileTransitions = true;
-const collections = {
+let collections = {
   "users": [],
   "polls": [],
   "votes": []
@@ -528,7 +528,16 @@ const Overlay = function () {
 		animation-iteration-count: 1;
 		animation-play-state: running;
 		animation-timing-function: ease-out;
-		background-color: linear-gradient( 90deg, rgb( 139, 195, 74 ) ${props => props.ratio}, rgb( 255, 255, 255 )  ${props => props.ratio} );
+		${props => {
+    if (!props.ended) return "";
+
+    if (typeof props.ratio !== "undefined") {
+      return `background-image: linear-gradient( 90deg, rgb( 139, 195, 74 ) ${props.ratio * 100}%, rgb( 255, 255, 255 )  ${props.ratio * 100}% );`;
+    }
+
+    return "";
+  }}
+		background-color: linear-gradient( 90deg, rgb( 139, 195, 74 ) ${props => props.ratio * 100}%, rgb( 255, 255, 255 )  ${props => props.ratio * 100}% );
 		
 		&.voted {
 			background-color: #4CAF50;
@@ -539,14 +548,16 @@ const Overlay = function () {
   function Overlay(props) {
     if (props.pid) {
       var doc = getDocument("polls", props.pid);
-      var ended = doc.creationTime + doc.duration >= Date.now();
-      var oc = ended ? i => createVote(props.pid, i) : () => null;
+      var ended = doc.creationTime + doc.duration <= Date.now();
+      var oc = ended ? () => null : i => createVote(props.pid, i);
       var choice = getChoice(props.pid);
       var score = [],
           total = 0;
+
+      for (let i = 0; i < doc.options.length; ++i) score[i] = 0;
+
       collections.votes.forEach(vote => {
         if (vote.pid === props.pid) {
-          score[vote.vote] = score[vote.vote] || 0;
           ++score[vote.vote];
           ++total;
         }
@@ -566,6 +577,7 @@ const Overlay = function () {
       key: i,
       className: choice === i ? "voted" : "",
       ratio: score[i] / total,
+      ended: ended,
       onClick: () => oc(i),
       style: {
         animationDelay: .3 + i * .2 * (speedUp /= 1.15) + "s"
